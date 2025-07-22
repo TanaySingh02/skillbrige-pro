@@ -14,6 +14,11 @@ const generateToken = (id) => {
 exports.registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, role } = req.body;
 
+  if (!name || !email || !password) {
+    res.status(400);
+    throw new Error('Please provide name, email, and password');
+  }
+
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
@@ -53,7 +58,6 @@ exports.loginUser = asyncHandler(async (req, res) => {
 
 // @desc    Get current user
 // @route   GET /api/auth/me
-// @access  Private
 exports.getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).select('-password');
   res.json(user);
