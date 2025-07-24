@@ -59,7 +59,7 @@ exports.downloadResume = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Resume not found");
   }
-  const filePath = path.resolve(resume.filePath);
+  const filePath = path.resolve(`.${resume.filePath}`);
   res.download(filePath, resume.fileName);
 });
 

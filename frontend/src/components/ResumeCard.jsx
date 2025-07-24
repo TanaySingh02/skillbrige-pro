@@ -43,14 +43,22 @@ const ResumeCard = ({ resume, isStudent, onDelete }) => {
         )}
 
         {filePath && (
-          <a href={`http://localhost:5000/${resume.filePath}`} download>
+          <a
+            href={`http://localhost:5000/api/resume/${resume._id}/download`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Download
           </a>
         )}
 
-<Link to={`http://localhost:5000/${resume.filePath}`} target="_blank" rel="noopener noreferrer">
-  View
-</Link>
+        <Link
+          to={`http://localhost:5000${resume.filePath}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View
+        </Link>
       </div>
     </div>
   );
