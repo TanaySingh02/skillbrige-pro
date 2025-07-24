@@ -1,0 +1,94 @@
+/* Navbar.css */
+
+/* Sticky Top Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Brand / Logo */
+.navbar-logo span {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3b82f6;
+  letter-spacing: 0.5px;
+}
+
+/* Link Container */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Common Button Styles */
+.navbar-links button {
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background: transparent;
+  color: #374151;
+}
+
+/* Scroll Section Buttons */
+.navbar-links button:hover {
+  background-color: #f3f4f6;
+  color: #2563eb;
+}
+
+/* Sign In Button */
+.navbar-links .signin {
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  color: #374151;
+}
+
+.navbar-links .signin:hover {
+  background-color: #f9fafb;
+  border-color: #cbd5e1;
+  color: #1e3a8a;
+}
+
+/* Get Started Button */
+.navbar-links .get-started {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.2);
+}
+
+.navbar-links .get-started:hover {
+  background-color: #2563eb;
+}
+
+/* Fix anchor scroll offset (due to sticky navbar) */
+section {
+  scroll-margin-top: 80px; /* enough for sticky navbar */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 24px;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}

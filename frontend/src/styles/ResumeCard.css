@@ -1,0 +1,126 @@
+/* ResumeCard.css — Compact Layout */
+
+.resume-card {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 260px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.resume-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.resume-card h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resume-card p {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin: 2px 0;
+  line-height: 1.3;
+}
+
+.resume-card span {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.resume-card-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.resume-card-actions button,
+.resume-card-actions a {
+  flex: 1 1 45%;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Default buttons (like Request Review) */
+.resume-card-actions button {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.resume-card-actions button:hover {
+  background-color: #2563eb;
+}
+
+/* Download + View Links */
+.resume-card-actions a {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+}
+
+.resume-card-actions a:hover {
+  background-color: #e5e7eb;
+}
+
+/* 🗑️ Delete Button Styling */
+.resume-card-actions .delete-btn {
+  background-color: #ef4444; /* red */
+  color: #fff;
+  flex: 1 1 100%;
+}
+
+.resume-card-actions .delete-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Responsive Grid Utility */
+.resume-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+/* 🔴 Delete Icon in Top Right */
+.delete-icon-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.delete-icon-btn:hover {
+  color: #dc2626;
+}
+
+/* Ensure card is position: relative to place absolute icon */
+.resume-card {
+  position: relative;
+}

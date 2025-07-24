@@ -1,19 +1,6 @@
 const mongoose = require('mongoose');
+// const sectionSchema = require('./Section');
 
-const sectionSchema = new mongoose.Schema({
-  title: { type: String, required: true },         // e.g., "Education"
-  content: { type: String, required: true },       // raw text or markdown
-  comments: [
-    {
-      reviewer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      text: String,
-      createdAt: { type: Date, default: Date.now }
-    }
-  ]
-});
 
 const resumeSchema = new mongoose.Schema({
   user: {
@@ -26,7 +13,7 @@ const resumeSchema = new mongoose.Schema({
     default: 1
   },
   title: { type: String, default: 'Untitled Resume' },
-  sections: [sectionSchema],
+  // sections: [sectionSchema],
   isPublic: {
     type: Boolean,
     default: false
@@ -35,9 +22,21 @@ const resumeSchema = new mongoose.Schema({
     type: String,
     enum: ['draft', 'submitted', 'under_review', 'reviewed'],
     default: 'draft'
+  },
+
+  fileName: {
+    type: String,
+    required: true
+  },
+  filePath: {
+    type: String,
+    required: true
+  },
+  averageRating: {
+    type: Number,
+    default: null
   }
 }, {
   timestamps: true
 });
-
 module.exports = mongoose.model('Resume', resumeSchema);

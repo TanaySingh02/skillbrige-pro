@@ -1,0 +1,37 @@
+/* styles/Dashboard.css */
+
+/* Layout container */
+.student-dashboard,
+.reviewer-dashboard {
+  padding: 40px 5%;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.student-dashboard h2,
+.reviewer-dashboard h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #1f2937;
+}
+
+.student-dashboard h3,
+.reviewer-dashboard h3 {
+  font-size: 1.5rem;
+  margin: 30px 0 15px;
+  color: #374151;
+}
+
+/* Resume Grid */
+.resume-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Optional: Add custom message style */
+.resume-grid + p,
+.resume-grid-empty {
+  color: #6b7280;
+  margin-top: 10px;
+}

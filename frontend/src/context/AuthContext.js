@@ -18,8 +18,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const isStudent = user?.role === 'student';
+  const isReviewer = user?.role === 'reviewer';
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isStudent, isReviewer }}>
       {children}
     </AuthContext.Provider>
   );
