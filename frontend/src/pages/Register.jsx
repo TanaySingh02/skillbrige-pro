@@ -208,7 +208,7 @@ const Register = () => {
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 appearance-none"
                   >
                     <option value="student">🎓 Student</option>
-                    <option value="certifiedReviewer">🏆 Certified Reviewer</option>
+                    <option value="reviewer">🏆 Certified Reviewer</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
