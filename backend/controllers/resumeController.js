@@ -2,6 +2,7 @@ const Resume = require("../models/Resume");
 const asyncHandler = require("express-async-handler");
 const path = require("path");
 const fs = require("fs"); 
+// const multer = require("multer");
 
 // Upload resume and versioning
 exports.uploadResume = asyncHandler(async (req, res) => {
@@ -149,3 +150,24 @@ exports.createBuiltResume = asyncHandler(async (req, res) => {
   const newResume = await Resume.create(resumeData);
   res.status(201).json(newResume);
 });
+
+
+//Saves built resume
+exports.saveFormResume = async (req, res) => {
+  try {
+    const { data, title } = req.body;
+    const userId = req.user._id;
+
+    const newResume = await Resume.create({
+      user: userId,
+      type: 'builder',
+      data,
+      title: title || 'Untitled Resume'
+    });
+
+    res.status(201).json(newResume);
+  } catch (err) {
+    console.error('Error saving builder resume:', err);
+    res.status(500).json({ error: 'Failed to save builder resume' });
+  }
+};

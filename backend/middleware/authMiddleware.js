@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 
+// General protect middleware (for any logged-in user)
 exports.protect = asyncHandler(async (req, res, next) => {
   let token;
 
@@ -13,15 +14,29 @@ exports.protect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select('-password');
+
+      if (!req.user) {
+        res.status(401);
+        throw new Error('Not authorized, user not found');
+      }
+
       next();
     } catch (err) {
       res.status(401);
       throw new Error('Not authorized, token failed');
     }
-  }
-
-  if (!token) {
+  } else {
     res.status(401);
     throw new Error('Not authorized, no token');
+  }
+});
+
+// Reviewer-only middleware
+exports.reviewerOnly = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.role === 'reviewer') {
+    next();
+  } else {
+    res.status(403);
+    throw new Error('Access denied: Reviewer only');
   }
 });
