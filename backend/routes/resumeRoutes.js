@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { uploadResume, getMyResumes, getResumeById, downloadResume, requestResumeReview, updateResumeStatus, deleteResume, createBuiltResume, saveFormResume } = require('../controllers/resumeController');
 const upload = require('../middleware/uploadMiddleware');
+const { submitReviewRequest } = require('../controllers/reviewController');
+
 const { protect, reviewerOnly } = require('../middleware/authMiddleware');
 
 
@@ -47,6 +49,7 @@ router.get('/reviewer/resumes', protect, reviewerOnly, async (req, res) => {
 router.patch('/reviewer/:id/status', protect, reviewerOnly, updateResumeStatus);
 
 
+router.post('/submit-review', protect, submitReviewRequest);
 
 
 

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['student', 'reviewer'],  // ✅ updated value here
+    enum: ['student', 'reviewer'], 
     default: 'student'
   },
   connections: [{

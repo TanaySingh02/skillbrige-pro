@@ -5,6 +5,8 @@ import ResumePreview from './ResumePreview';
 
 const ResumeForm = ({ onResumeCreated }) => {
   const [showPreview, setShowPreview] = useState(false);
+  const [loading, setSaving] = useState(false);
+
   const [formData, setFormData] = useState({
     personalInfo: {
       name: '',
@@ -13,22 +15,11 @@ const ResumeForm = ({ onResumeCreated }) => {
       location: '',
       summary: ''
     },
-    education: [
-      { school: '', degree: '', field: '', year: '', gpa: '' }
-    ],
-    experience: [
-      { company: '', position: '', startDate: '', endDate: '', description: '' }
-    ],
-    projects: [
-      { name: '', description: '', technologies: '', link: '' }
-    ],
-    skills: {
-      technical: '',
-      soft: ''
-    }
+    education: [{ school: '', degree: '', field: '', year: '', gpa: '' }],
+    experience: [{ company: '', position: '', startDate: '', endDate: '', description: '' }],
+    projects: [{ name: '', description: '', technologies: '', link: '' }],
+    skills: { technical: '', soft: '' }
   });
-
-  const [loading, setSaving] = useState(false);
 
   const handlePersonalInfoChange = (e) => {
     setFormData({
@@ -43,10 +34,7 @@ const ResumeForm = ({ onResumeCreated }) => {
   const handleArrayItemChange = (section, index, field, value) => {
     const updatedArray = [...formData[section]];
     updatedArray[index][field] = value;
-    setFormData({
-      ...formData,
-      [section]: updatedArray
-    });
+    setFormData({ ...formData, [section]: updatedArray });
   };
 
   const addArrayItem = (section) => {
@@ -55,37 +43,27 @@ const ResumeForm = ({ onResumeCreated }) => {
       experience: { company: '', position: '', startDate: '', endDate: '', description: '' },
       projects: { name: '', description: '', technologies: '', link: '' }
     };
-    
-    setFormData({
-      ...formData,
-      [section]: [...formData[section], templates[section]]
-    });
+    setFormData({ ...formData, [section]: [...formData[section], templates[section]] });
   };
 
   const removeArrayItem = (section, index) => {
     if (formData[section].length > 1) {
       const updatedArray = formData[section].filter((_, i) => i !== index);
-      setFormData({
-        ...formData,
-        [section]: updatedArray
-      });
+      setFormData({ ...formData, [section]: updatedArray });
     }
   };
 
   const handleSkillsChange = (type, value) => {
     setFormData({
       ...formData,
-      skills: {
-        ...formData.skills,
-        [type]: value
-      }
+      skills: { ...formData.skills, [type]: value }
     });
   };
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await axios.post('/api/resume', formData);
+      const response = await axios.post('/api/resume/form', formData);
       onResumeCreated(response.data);
       alert('Resume saved successfully!');
     } catch (error) {
@@ -95,14 +73,17 @@ const ResumeForm = ({ onResumeCreated }) => {
     }
   };
 
-  const handlePreview = (e) => {
-    e.preventDefault();
+  const handlePreview = () => {
     setShowPreview(true);
   };
 
   const handleBackFromPreview = () => {
     setShowPreview(false);
   };
+
+   if (showPreview) {
+    return <ResumePreview resume={formData} onBack={handleBackFromPreview} />;
+  }
 
   if (showPreview) {
     return (
