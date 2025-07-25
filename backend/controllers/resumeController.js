@@ -131,3 +131,21 @@ exports.deleteResume = asyncHandler(async (req, res) => {
   await resume.deleteOne();
   res.status(200).json({ message: 'Resume deleted successfully' });
 });
+
+// Create a built resume from the form data
+
+
+exports.createBuiltResume = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const resumeData = {
+    user: userId,
+    type: 'builder', // distinguish between 'upload' and 'builder' types
+    data: req.body,  // this will hold your structured form data
+    version: 1,
+    createdAt: new Date(),
+  };
+
+  const newResume = await Resume.create(resumeData);
+  res.status(201).json(newResume);
+});

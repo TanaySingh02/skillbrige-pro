@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { uploadResume, getMyResumes, getResumeById, downloadResume, requestResumeReview, updateResumeStatus, deleteResume} = require('../controllers/resumeController');
+const { uploadResume, getMyResumes, getResumeById, downloadResume, requestResumeReview, updateResumeStatus, deleteResume, createBuiltResume } = require('../controllers/resumeController');
 const upload = require('../middleware/uploadMiddleware');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -30,6 +30,9 @@ router.post('/:id/request-review', protect, requestResumeReview);
 router.patch('/:id/status', protect, updateResumeStatus);
 
 router.delete('/:id', protect, deleteResume);
+router.post('/builder', protect, createBuiltResume);
+
+
 
 
 
