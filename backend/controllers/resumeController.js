@@ -1,10 +1,11 @@
 const Resume = require("../models/Resume");
+const User = require("../models/User");
+const Review = require("../models/Review");
 const asyncHandler = require("express-async-handler");
 const path = require("path");
-const fs = require("fs"); 
-// const multer = require("multer");
+const fs = require("fs");
 
-// Upload resume and versioning
+// ✅ Upload resume and versioning
 exports.uploadResume = asyncHandler(async (req, res) => {
   if (!req.file) {
     res.status(400);
@@ -19,7 +20,7 @@ exports.uploadResume = asyncHandler(async (req, res) => {
     user: req.user._id,
     fileName: req.file.filename,
     filePath: `/uploads/${req.file.filename}`,
-    title: req.file.originalname || "Untitled Resume", 
+    title: req.file.originalname || "Untitled Resume",
     version: latestResume ? latestResume.version + 1 : 1,
     isPublic: false,
   });
@@ -32,7 +33,7 @@ exports.uploadResume = asyncHandler(async (req, res) => {
   });
 });
 
-// Get latest 4 resumes of the user
+// ✅ Get latest 4 resumes of the user
 exports.getMyResumes = asyncHandler(async (req, res) => {
   const resumes = await Resume.find({ user: req.user._id })
     .sort({ createdAt: -1 })
@@ -40,7 +41,7 @@ exports.getMyResumes = asyncHandler(async (req, res) => {
   res.json(resumes);
 });
 
-// Get a resume by ID
+// ✅ Get a resume by ID
 exports.getResumeById = asyncHandler(async (req, res) => {
   const resume = await Resume.findById(req.params.id).populate(
     "user",
@@ -64,7 +65,7 @@ exports.downloadResume = asyncHandler(async (req, res) => {
   res.download(filePath, resume.fileName);
 });
 
-// ✅ Request resume review (sets status to "In Review")
+// ✅ Request resume review (updated with correct status value)
 exports.requestResumeReview = asyncHandler(async (req, res) => {
   const resume = await Resume.findById(req.params.id);
   if (!resume) {
@@ -77,18 +78,82 @@ exports.requestResumeReview = asyncHandler(async (req, res) => {
     throw new Error("Not authorized to update this resume");
   }
 
-  resume.status = "In Review";
+  // Updated to use correct enum value from schema
+  resume.status = "under_review";
   await resume.save();
 
   res.status(200).json({ message: "Resume sent for review", resume });
 });
-// ✅ Update resume status (for reviewers)
-// @desc    Update resume status
-// @route   PATCH /api/resume/:id/status
-// @access  Private
+
+// ✅ Submit review request (uncommented and fixed)
+exports.submitReviewRequest = asyncHandler(async (req, res) => {
+  const { resumeId, resumeType } = req.body;
+
+  const resume = await Resume.findById(resumeId);
+  if (!resume) {
+    res.status(404);
+    throw new Error("Resume not found");
+  }
+
+  if (resume.user.toString() !== req.user._id.toString()) {
+    res.status(403);
+    throw new Error("Not authorized to submit this resume");
+  }
+
+  // Update status to submitted
+  resume.status = "submitted";
+  await resume.save();
+
+  // Find a reviewer (random one for now)
+  const reviewer = await User.findOne({ role: "reviewer" });
+  if (!reviewer) {
+    res.status(500);
+    throw new Error("No reviewer available");
+  }
+
+  // Create Review entry
+  await Review.create({
+    resume: resume._id,
+    reviewer: reviewer._id,
+    status: "pending"
+  });
+
+  res.status(200).json({ message: "Review request submitted successfully" });
+});
+
+// ✅ Update resume status (with validation)
 exports.updateResumeStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
+  const validStatuses = ["draft", "submitted", "under_review", "reviewed"];
 
+  if (!validStatuses.includes(status)) {
+    res.status(400);
+    throw new Error(`Invalid status. Must be one of: ${validStatuses.join(", ")}`);
+  }
+
+  const resume = await Resume.findById(req.params.id);
+  if (!resume) {
+    res.status(404);
+    throw new Error("Resume not found");
+  }
+
+  // Allow both owner and reviewers to update status
+  const isOwner = resume.user.toString() === req.user._id.toString();
+  const isReviewer = req.user.role === "reviewer";
+
+  if (!isOwner && !isReviewer) {
+    res.status(403);
+    throw new Error("Not authorized to update this resume");
+  }
+
+  resume.status = status;
+  await resume.save();
+
+  res.json({ message: "Resume status updated", resume });
+});
+
+// ✅ Delete resume
+exports.deleteResume = asyncHandler(async (req, res) => {
   const resume = await Resume.findById(req.params.id);
 
   if (!resume) {
@@ -96,53 +161,28 @@ exports.updateResumeStatus = asyncHandler(async (req, res) => {
     throw new Error("Resume not found");
   }
 
-  // Only owner can update status
   if (resume.user.toString() !== req.user._id.toString()) {
     res.status(403);
-    throw new Error("Unauthorized to update this resume");
+    throw new Error("Not authorized to delete this resume");
   }
 
-  resume.status = status || "submitted";
-  await resume.save();
-
-  res.json({ message: "Resume status updated", resume });
-});
-
-//Delte a resume
-// Controller function
-exports.deleteResume = asyncHandler(async (req, res) => {
-  const resume = await Resume.findById(req.params.id);
-
-  if (!resume) {
-    res.status(404);
-    throw new Error('Resume not found');
-  }
-
-  // Authorization check
-  if (resume.user.toString() !== req.user._id.toString()) {
-    res.status(403);
-    throw new Error('Not authorized to delete this resume');
-  }
-
-  // Delete file from file system
-  if (fs.existsSync(resume.filePath)) {
-    fs.unlinkSync(resume.filePath);
+  const absolutePath = path.resolve(`.${resume.filePath}`);
+  if (fs.existsSync(absolutePath)) {
+    fs.unlinkSync(absolutePath);
   }
 
   await resume.deleteOne();
-  res.status(200).json({ message: 'Resume deleted successfully' });
+  res.status(200).json({ message: "Resume deleted successfully" });
 });
 
-// Create a built resume from the form data
-
-
+// ✅ Create built resume
 exports.createBuiltResume = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const resumeData = {
     user: userId,
-    type: 'builder', // distinguish between 'upload' and 'builder' types
-    data: req.body,  // this will hold your structured form data
+    type: "builder",
+    data: req.body,
     version: 1,
     createdAt: new Date(),
   };
@@ -151,23 +191,17 @@ exports.createBuiltResume = asyncHandler(async (req, res) => {
   res.status(201).json(newResume);
 });
 
+// ✅ Save form resume
+exports.saveFormResume = asyncHandler(async (req, res) => {
+  const { data, title } = req.body;
+  const userId = req.user._id;
 
-//Saves built resume
-exports.saveFormResume = async (req, res) => {
-  try {
-    const { data, title } = req.body;
-    const userId = req.user._id;
+  const newResume = await Resume.create({
+    user: userId,
+    type: "builder",
+    data,
+    title: title || "Untitled Resume"
+  });
 
-    const newResume = await Resume.create({
-      user: userId,
-      type: 'builder',
-      data,
-      title: title || 'Untitled Resume'
-    });
-
-    res.status(201).json(newResume);
-  } catch (err) {
-    console.error('Error saving builder resume:', err);
-    res.status(500).json({ error: 'Failed to save builder resume' });
-  }
-};
+  res.status(201).json(newResume);
+});

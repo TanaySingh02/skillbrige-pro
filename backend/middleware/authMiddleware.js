@@ -11,6 +11,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     try {
+      console.log("enter middle")
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select('-password');
@@ -33,7 +34,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 // Reviewer-only middleware
 exports.reviewerOnly = asyncHandler(async (req, res, next) => {
+  
   if (req.user && req.user.role === 'reviewer') {
+    console.log("enter middle2")
     next();
   } else {
     res.status(403);
