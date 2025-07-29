@@ -1,25 +1,31 @@
-const mongoose = require('mongoose');
+// models/Review.js
+const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema({
   resume: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Resume',
-    required: true
+    ref: "Resume",
+    required: true,
   },
   reviewer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
+  },
+  comments: {
+    personalInfo: String,
+    education: String,
+    experience: String,
+    projects: String,
+    skills: String,
   },
   status: {
     type: String,
-    enum: ['pending', 'in_progress', 'completed'],
-    default: 'pending'
+    enum: ["pending", "completed"],
+    default: "pending",
   },
-  generalFeedback: String,
-  reviewedAt: Date
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('Review', reviewSchema);
+module.exports = mongoose.model("Review", reviewSchema);
