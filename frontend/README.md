@@ -36,7 +36,6 @@ SkillBridge Pro is built on the robust MERN stack, ensuring a fast, scalable, an
 | **React.js** | A declarative, component-based library for building a dynamic and responsive user interface. |
 | **Tailwind CSS** | A utility-first CSS framework for rapidly building custom designs without leaving your HTML. |
 | **Axios** | A promise-based HTTP client for making API requests to the backend. |
-| **React Toastify** | Used for displaying user-friendly notifications and feedback. |
 
 ### Backend
 
